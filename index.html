@@ -3,17 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wordle Game</title>
+    <title>Prueba Wordle</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- <script src="script.js"></script> -->
 </head>
 <body>
-    <div class="contenedor">
-        <div class="titulo"><h1>Wordle Game</h1></div>
-        <div class="cuerpo"><input type="text" id="guess-input">
-        <button id="guess-button">Intentar</button>
-        <div id="grid"></div>
-        <p id="guesses">
+        <h1>Wordle Juego</h1>
+        <div id="gameBoard" class="gameboard">
+            <!-- <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell correct">P</div>
+            <div class="cell incorrect">E</div>
+            <div class="cell semi-correct">A</div>
+            <div class="cell incorrect">C</div>
+            <div class="cell incorrect">E</div> -->
         </div>
-    </div>
+        <div class="flex-container">
+            <input type="text" id="guessInput" class="guessInput" maxlength="5">
+            <button id="guessButton" class="guessButton">Guess</button>
+        </div>
+        <script src="script.js"></script>
 </body>
 </html>

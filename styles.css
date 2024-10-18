@@ -1,76 +1,66 @@
 body {
-    display: flex;
-    font-family: 'Times New Roman', Times, serif;
-    padding: 20px;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .contenedor{
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    gap: 40px;
-    background-color: peachpuff;
-    padding: 30px 10px 40px 10px;
-    width: 30%;
-    margin: 40px;
-  }
-     
-  h1 {
-    display: flex;
+    font-family: Arial, sans-serif;
     text-align: center;
-    color: #fff;
-  }
-     
-  #guess-input {
-    display: block;
-    margin: 0 auto 20px;
-    padding: 10px;
-    font-size: 18px;
-    width: 250px;
-    border: 1px solid #ccc;
-  }
-     
-  #guess-button {
-    display: block;
-    margin: 0 auto;
-    padding: 10px 20px;
-    font-size: 20px;
-    background-color: #0CBABA;
-    color: black;
-    border: none;
-    border-radius: 3px;
-    font-family: 'Times New Roman', Times, serif;
-    margin-top: 50%;
-  }
-     
-  button:active {
-      transform: scale(0.95);
-  }
-     
-  .letter {
-      border: 1px solid black;
-      padding: 3px;
-      margin: 3px;
-      min-width: 20px;
-      text-align: center;
-      display: inline-block
-  }
-     
-  .row{
-      margin-bottom: 10px;
-  }
-     
-  .input-area{
-      margin: 30px;
-  }
+    background-color: peachpuff;
+}
 
-  .titulo{
+.gameboard {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin: 20px auto;
+    max-width: fit-content;
+}
+
+.cell {
+    width: 60px;
+    height: 60px;
+    border: 2px solid #333;
+    text-align: center;
+    line-height: 60px;
+    font-size: 2em;
+}
+
+.cell.correct {
+    background: #538d4e;
+    color: white;
+}
+
+.cell.semi-correct {
+    background: #b59f3b;
+    color: white;
+}
+
+.cell.incorrect {
+    background: #3a3a3c;
+    color: white;
+}
+
+@media (max-width: 400px) {
+    .cell {
+        width: 40px;
+        height: 40px;
+        border: 1px solid #333;
+        text-align: center;
+        line-height: 40px;
+        font-size: 1em;
+    }
+}
+
+.flex-container {
     display: flex;
     align-items: center;
-    background-color: lightblue;
-    padding: 10px 35px;
-    font-size: 20px;
-    height: 100px;
-  }
+    justify-content: center;
+    gap: 20px;
+}
+
+.guessInput {
+    width: 230px;
+    font-size: 28px;
+    height: 40px;
+}
+
+.guessButton {
+    width: 100px;
+    height: 40px;
+}
