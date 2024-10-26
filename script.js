@@ -1,49 +1,71 @@
-// window.addEventListener("load", (event) => {
-//     console.log("page is fully loaded");
-// });
+async function obtenerPalabra() {
+    const url = `https://random-word-api.vercel.app/api?words=1&length=5`;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+        const json = await response.json();
+        return json;
+    } catch (error) {
+        console.error(error.message);
+    }
+}
 
-const gameBoard = document.getElementById('gameBoard');
-const guessInput = document.getElementById('guessInput');
-const guessButton = document.getElementById('guessButton');
+// Function que valida la palabra ingresa por el usuario
+function validateWord(targetWord, guessedWord, inputs, results, gameBoard) {
+    console.log("validateWord")
+    inputs.push(guessedWord);
+    
+    // Convert words to arrays for easier manipulation
+    const guessArr = guessedWord.toLowerCase().split('');
+    const targetArr = targetWord.toLowerCase().split('');
 
-const inputs = [];
-const results = [];
+    // Array to store the result of each letter's validation
+    let result = new Array(guessedWord.length).fill(''); // 'correct', 'semi-correct', or 'incorrect'
 
-let solutionWord = 'house';
-
-function validate(guess) {
-    console.log(guess);
-    inputs.push(guess);
-    // const validation = ["i", "i", "i", "i", "c"];
-    // results.push(validation);
-    // console.log(results.lenght);
-    results[results.length] = [];
-
-    for (let i= 0; i < 5; i++) {
-        if (guess[i] === solutionWord[i]) {
-            results[results.length - 1].push("c");
-        } else if (solutionWord.includes(guess[i])) {
-            results[results.length - 1].push("s");
-        } else {
-            results[results.length - 1].push("i");
+    // First pass: check for letters in the correct position (green in Wordle)
+    for (let i = 0; i < guessArr.length; i++) {
+        if (guessArr[i] === targetArr[i]) {
+            result[i] = 'c';
+            targetArr[i] = null; // Mark as used to avoid duplicate checks in second pass
         }
     }
 
-    // console.log(inputs)
-    // console.log(results)
+    // Second pass: check for misplaced letters (yellow in Wordle)
+    for (let i = 0; i < guessArr.length; i++) {
+        if (result[i] === '') { // If not already marked as correct
+            const indexInTarget = targetArr.indexOf(guessArr[i]);
+            if (indexInTarget !== -1) {
+                result[i] = 's';
+                targetArr[indexInTarget] = null; // Mark as used
+            } else {
+                result[i] = 'i'; // Letter is not in the word
+            }
+        }
+    }
 
-    refreshGame();
+    results[results.length] = result;
+    refreshGame(inputs, results, gameBoard);
+
+    // Mostrar un alert si el usuario gana WIN o pierde LOST el juego
+    const corrects = results[results.length - 1].filter((value) => value === "c")
+    if (corrects.length === 5) {
+        alert('WIN');
+    } else if (results.length === 6) {
+        alert("LOST")
+    }
 }
 
-function refreshGame() {
+// Function que refresca el tablero y agrega la clase correspondiente (verde, amarillo, gris)
+function refreshGame(inputs, results, gameBoard) {
     const cells = gameBoard.getElementsByClassName('cell');
-      for (let i = 0; i < 30; i++) { // 6 attempts, 5 letters each
+    for (let i = 0; i < 30; i++) { // 6 attempts, 5 letters each
         let cell = cells[i];
         let y = Math.floor(i / 5);
         let x = i - y * 5;
         if(inputs.length > y && inputs[y][x]) {
             let result = '';
-            // console.log(results[y][x])
             if (results[y][x] === "c") {
                 result = "correct"
             } else if (results[y][x] === "s") { 
@@ -57,37 +79,72 @@ function refreshGame() {
     }
 }
 
-// Event listener para boton de guess
-guessButton.addEventListener('click', function() {
-    let guess = guessInput.value.toLowerCase();
-    if (guess.length === 5) {
-        validate(guess);
-    } else {
-        alert('Please enter a 5-letter word.');
-    }
-});
+window.onload = async (event) => {
+    // Obtiene la palabra e imprime, es un array
+    const apiWord = await obtenerPalabra();
+    console.log(apiWord)
 
-// guessInput.addEventListener('change', function() {
-//     let guess = guessInput.value.toLowerCase();
-//     console.log(guess)
-// });
+    const gameBoard = document.getElementById('gameBoard');
+    const guessInput = document.getElementById('guessInput');
+    const guessButton = document.getElementById('guessButton');
 
-function initializeGame() {
-    console.log(gameBoard);
-    for (let i = 0; i < 30; i++) { // 6 attempts, 5 letters each
-        let cell = document.createElement('div');
-        cell.classList.add('cell');
-        let y = Math.floor(i / 5);
-        let x = i - y * 5;
+    const inputs = [];
+    const results = [];
 
-        if(inputs.length > y && inputs[y][x]) {
-            const result = results[y][x] === "+" ? "correct" : results[y][x] === "x" ? "semi-correct" : "incorrect";
-            cell.textContent = inputs[y][x].toUpperCase();
-            cell.classList.add(result);
+    if (apiWord.length > 0){
+        // Obtiene el primer elemento del array que es la palabra a adivinar
+        const targetWord = apiWord[0];
+
+        // Function que llama a la validacion de la palabra
+        function handleUpdate() {
+            let guess = guessInput.value.toLowerCase();
+            if (guess.length === 5) {
+                validateWord(targetWord, guess, inputs, results, gameBoard);
+            } else {
+                alert('Please enter a 5-letter word.');
+            }
         }
 
-        gameBoard.appendChild(cell);
-    }
-}
+        // Event listener para boton de guess
+        guessButton.addEventListener('click', function() {
+            handleUpdate();
+        });
 
-initializeGame();
+        // Event listener para input de guess
+        // guessInput.addEventListener('change', function() {
+        //     handleUpdate();
+        // });
+
+        // Function que inicializa el tablero
+        function initializeGame() {
+            for (let i = 0; i < 30; i++) { // 6 attempts, 5 letters each
+                let cell = document.createElement('div');
+                cell.classList.add('cell');
+                let y = Math.floor(i / 5);
+                let x = i - y * 5;
+
+                if(inputs.length > y && inputs[y][x]) {
+                    const result = results[y][x] === "+" ? "correct" : results[y][x] === "x" ? "semi-correct" : "incorrect";
+                    cell.textContent = inputs[y][x].toUpperCase();
+                    cell.classList.add(result);
+                }
+
+                gameBoard.appendChild(cell);
+            }
+        }
+
+        initializeGame();
+    } else {
+        alert("Ha ocurrido un error al obtener datos de la Api")
+    }
+};
+
+const keys = document.querySelectorAll('.key');
+keys.forEach(key => {
+    key.addEventListener('click', () => {
+        const guessInput = document.getElementById('guessInput');
+        if (guessInput.value.length < 5) {
+            guessInput.value += key.textContent;
+        }
+    });
+});

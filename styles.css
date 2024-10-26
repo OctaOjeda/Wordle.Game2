@@ -2,6 +2,7 @@ body {
     font-family: Arial, sans-serif;
     text-align: center;
     background-color: peachpuff;
+    margin-top: 150px;
 }
 
 .gameboard {
@@ -63,4 +64,28 @@ body {
 .guessButton {
     width: 100px;
     height: 40px;
+}
+
+#teclado {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 5px;
+    margin: 0 auto;
+    justify-items: center;
+    width: 20%;
+    padding-top: 10px;
+}
+
+.key {
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
+    cursor: pointer;
+    border: 1px solid #333;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+.key:hover {
+    background-color: #e0e0e0;
 }
